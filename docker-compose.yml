@@ -1,0 +1,32 @@
+# Plex Server
+plex:
+  container_name: plex
+  image: greensheep/plex-server-docker-rpi:0.9.16.6
+  net: "host"
+  ports:
+    - 32400:32400
+  restart: always
+  volumes:
+    - /home/pirate/plex/config:/config
+    - /home/pirate/plex/data:/data
+
+# Share plex data volume as Samba share
+samba-server:
+  container_name: samba-server
+  image: greensheep/samba-server:0.1.0
+  net: "host"
+  restart: always
+  volumes_from:
+    - plex
+
+# Sabnzbd server
+sabnzbd:
+  container_name: Sabnzbd
+  image: sabnzbd
+  net: "host"
+  ports:
+    - 8082:8082
+  restart: always
+  volumes:
+    - /home/pirate/sabnzbd/config:/config
+    - /home/pirate/sabnzbd/data:/data
